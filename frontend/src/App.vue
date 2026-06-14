@@ -56,13 +56,50 @@
         </div>
       </div>
 
+      <!-- Event Filter -->
+      <div class="bg-gray-800 rounded-xl p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-cyan-300 font-bold text-sm">事件筛选</h3>
+          <button v-if="store.isFilterActive" @click="store.resetFilter()" class="text-xs text-gray-400 hover:text-cyan-400">
+            重置
+          </button>
+        </div>
+        <div>
+          <label class="text-gray-400 text-xs">震级范围</label>
+          <div class="flex gap-1 mt-0.5">
+            <input v-model.number="store.eventFilter.minMagnitude" type="number" step="0.1" placeholder="最小"
+              class="w-1/2 bg-gray-700 rounded px-2 py-1 text-xs text-white outline-none focus:ring-1 focus:ring-cyan-500" />
+            <input v-model.number="store.eventFilter.maxMagnitude" type="number" step="0.1" placeholder="最大"
+              class="w-1/2 bg-gray-700 rounded px-2 py-1 text-xs text-white outline-none focus:ring-1 focus:ring-cyan-500" />
+          </div>
+        </div>
+        <div>
+          <label class="text-gray-400 text-xs">深度范围 (km)</label>
+          <div class="flex gap-1 mt-0.5">
+            <input v-model.number="store.eventFilter.minDepth" type="number" step="1" placeholder="最小"
+              class="w-1/2 bg-gray-700 rounded px-2 py-1 text-xs text-white outline-none focus:ring-1 focus:ring-cyan-500" />
+            <input v-model.number="store.eventFilter.maxDepth" type="number" step="1" placeholder="最大"
+              class="w-1/2 bg-gray-700 rounded px-2 py-1 text-xs text-white outline-none focus:ring-1 focus:ring-cyan-500" />
+          </div>
+        </div>
+        <div>
+          <label class="text-gray-400 text-xs">地区关键词</label>
+          <input v-model="store.eventFilter.location" type="text" placeholder="如：四川、台湾"
+            class="w-full bg-gray-700 rounded px-2 py-1 mt-0.5 text-xs text-white outline-none focus:ring-1 focus:ring-cyan-500" />
+        </div>
+        <div class="text-gray-500 text-xs text-right">
+          {{ store.filteredEvents.length }} / {{ store.events.length }} 条结果
+        </div>
+      </div>
+
       <!-- Events -->
       <div class="bg-gray-800 rounded-xl p-3">
         <h3 class="text-cyan-300 font-bold text-sm mb-2">地震事件目录</h3>
-        <div v-for="e in store.events" :key="e.id" class="bg-gray-700 rounded p-2 mb-1 text-xs">
+        <div v-for="e in store.filteredEvents" :key="e.id" class="bg-gray-700 rounded p-2 mb-1 text-xs">
           M{{ e.magnitude }} {{ e.location }}
           <div class="text-gray-500">深度 {{ e.depth }}km | {{ e.originTime.slice(0, 16) }}</div>
         </div>
+        <div v-if="!store.filteredEvents.length" class="text-gray-600 text-xs">无匹配事件</div>
       </div>
     </div>
 
